@@ -7,7 +7,7 @@ DIV   := ━━━━━━━━━━━━━━━━━━━━━━━�
 setup:
 	@echo ""
 	@echo "$(DIV)"
-	@echo "  verifierform-stake-env — Setup"
+	@echo "  verifierform-stake-local — Setup"
 	@echo "$(DIV)"
 	@echo ""
 	@if [ ! -f ".env" ]; then \
@@ -32,8 +32,8 @@ setup:
 	else \
 		echo "  ✓ Admin token already set"; \
 	fi
-	@if [ ! -d "../stake-bet-lookup/scripts/node_modules" ]; then \
-		(cd ../stake-bet-lookup/scripts && npm install --silent); \
+	@if [ ! -d "../verifierform-stake-bet-lookup/scripts/node_modules" ]; then \
+		(cd ../verifierform-stake-bet-lookup/scripts && npm install --silent); \
 		echo "  ✓ Capture script deps installed"; \
 	fi
 	@echo ""
@@ -79,8 +79,8 @@ capture:
 	fi
 	@printf '{\n  "method": "api",\n  "api": {\n    "endpoint": "http://localhost:%s/api/admin/update-clearance",\n    "token": "%s"\n  }\n}\n' \
 		"$${PORT:-3000}" "$$RAW" \
-		> ../stake-bet-lookup/scripts/sync-config.json
-	$(MAKE) -C ../stake-bet-lookup capture
+		> ../verifierform-stake-bet-lookup/scripts/sync-config.json
+	$(MAKE) -C ../verifierform-stake-bet-lookup capture
 
 ## Rotate the admin token
 token:

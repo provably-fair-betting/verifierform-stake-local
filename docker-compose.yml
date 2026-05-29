@@ -37,7 +37,7 @@ services:
   # Secrets are injected at runtime — nothing sensitive is baked into the image.
   #
   lookup-app:
-    image: ghcr.io/provably-fair-betting/stake-bet-lookup:1
+    image: ghcr.io/provably-fair-betting/verifierform-stake-bet-lookup:1
     environment:
       APP_ENV: local
       APP_DEBUG: "true"

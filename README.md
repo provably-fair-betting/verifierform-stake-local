@@ -1,4 +1,4 @@
-# verifierform-stake-env
+# verifierform-stake-local
 
 Local E2E environment for testing the **Bet Lookup** feature end-to-end.
 
@@ -7,7 +7,7 @@ Wires together two pre-built images from GitHub Container Registry:
 | Service | Image | Role |
 |---|---|---|
 | Frontend | `ghcr.io/provably-fair-betting/verifierform-stake:1` | Static SvelteKit SPA |
-| API | `ghcr.io/provably-fair-betting/stake-bet-lookup:1` | Laravel bet-lookup backend |
+| API | `ghcr.io/provably-fair-betting/verifierform-stake-bet-lookup:1` | Laravel bet-lookup backend |
 
 A single nginx reverse proxy serves both under one origin (`http://localhost:3000`), routing `/api/` to the backend and `/` to the frontend — no CORS configuration required.
 
@@ -19,7 +19,7 @@ A single nginx reverse proxy serves both under one origin (`http://localhost:300
 Browser (http://localhost:3000)
   └── proxy (nginx)
        ├── /        → frontend (verifierform-stake image)
-       └── /api/    → lookup-app (stake-bet-lookup image) → lookup-db (MySQL)
+       └── /api/    → lookup-app (verifierform-stake-bet-lookup image) → lookup-db (MySQL)
 ```
 
 ---
