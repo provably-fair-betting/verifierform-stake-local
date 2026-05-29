@@ -1,0 +1,89 @@
+services:
+  # ── Reverse proxy (public entry point) ────────────────────────────────────
+  #
+  # Serves the frontend at / and proxies /api/ to the bet-lookup backend.
+  # Same-origin routing means no CORS configuration is needed.
+  #
+  proxy:
+    image: nginx:alpine
+    ports:
+      - "${PORT:-3000}:80"
+    volumes:
+      - ./config/nginx-proxy.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - frontend
+      - lookup-app
+    restart: unless-stopped
+    networks:
+      - env
+
+  # ── Frontend (static SPA) ──────────────────────────────────────────────────
+  #
+  # Pre-built image published to ghcr.io on every release.
+  # BET_LOOKUP_URL is the browser-visible origin; bet-lookup.ts resolves
+  # /api/bet-lookup against it, which the proxy routes to lookup-app.
+  #
+  frontend:
+    image: ghcr.io/provably-fair-betting/verifierform-stake:1
+    environment:
+      BET_LOOKUP_URL: http://localhost:${PORT:-3000}
+    restart: unless-stopped
+    networks:
+      - env
+
+  # ── Bet Lookup API ─────────────────────────────────────────────────────────
+  #
+  # Pre-built image published to ghcr.io on every release.
+  # Secrets are injected at runtime — nothing sensitive is baked into the image.
+  #
+  lookup-app:
+    image: ghcr.io/provably-fair-betting/stake-bet-lookup:1
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      APP_KEY: ${APP_KEY}
+      STAKE_ADMIN_TOKEN: ${STAKE_ADMIN_TOKEN}
+      STAKE_API_URL: ${STAKE_API_URL:-https://stake.games/_api/graphql}
+      STAKE_ACCESS_TOKEN: ${STAKE_ACCESS_TOKEN:-}
+      STAKE_CLEARANCE_ALERT_EMAIL: ${STAKE_CLEARANCE_ALERT_EMAIL:-dev@localhost}
+      DB_CONNECTION: mysql
+      DB_HOST: lookup-db
+      DB_PORT: 3306
+      DB_DATABASE: stake_app
+      DB_USERNAME: stake
+      DB_PASSWORD: secret
+      SESSION_DRIVER: file
+      CACHE_STORE: file
+      LOG_CHANNEL: stderr
+    depends_on:
+      lookup-db:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - env
+
+  # ── Database ───────────────────────────────────────────────────────────────
+  lookup-db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: stake_app
+      MYSQL_USER: stake
+      MYSQL_PASSWORD: secret
+    volumes:
+      - lookup-db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+    networks:
+      - env
+
+volumes:
+  lookup-db:
+
+networks:
+  env:
+    driver: bridge
