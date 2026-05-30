@@ -83,11 +83,7 @@ The bet-lookup API proxies to `stake.games` which is protected by Cloudflare. Th
 
 ## Configuration
 
-Copy `.env.example` to `.env` to override defaults:
-
-```sh
-cp .env.example .env
-```
+`make setup` creates `.env` from `.env.example` automatically. The only variable you may want to override is:
 
 | Variable | Default | Description |
 |---|---|---|
