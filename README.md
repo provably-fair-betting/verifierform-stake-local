@@ -7,7 +7,7 @@ Wires together two pre-built images from GitHub Container Registry:
 | Service | Image | Role |
 |---|---|---|
 | Frontend | `ghcr.io/provably-fair-betting/verifierform-stake:1` | Static SvelteKit SPA |
-| API | `ghcr.io/provably-fair-betting/verifierform-stake-bet-lookup:1` | Laravel bet-lookup backend |
+| API | `ghcr.io/provably-fair-betting/verifierform-stake-bet-lookup:2` | Laravel bet-lookup backend |
 
 A single nginx reverse proxy serves both under one origin (`http://localhost:3000`), routing `/api/` to the backend and `/` to the frontend — no CORS configuration required.
 
