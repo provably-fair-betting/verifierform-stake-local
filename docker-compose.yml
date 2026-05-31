@@ -25,6 +25,7 @@ services:
   #
   frontend:
     image: ghcr.io/provably-fair-betting/verifierform-stake:1
+    platform: linux/amd64
     environment:
       BET_LOOKUP_URL: http://localhost:${PORT:-3000}
     restart: unless-stopped
@@ -38,6 +39,7 @@ services:
   #
   lookup-app:
     image: ghcr.io/provably-fair-betting/verifierform-stake-bet-lookup:2
+    platform: linux/amd64
     environment:
       APP_ENV: local
       APP_DEBUG: "true"
