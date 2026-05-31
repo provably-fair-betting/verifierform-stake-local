@@ -76,8 +76,8 @@ capture:
 	if [ -z "$$RAW" ]; then \
 		echo "  ✗ STAKE_ADMIN_RAW_TOKEN not set — run make setup"; \
 		exit 1; \
-	fi
-	@printf '{\n  "method": "api",\n  "api": {\n    "endpoint": "http://localhost:%s/api/admin/update-clearance",\n    "token": "%s"\n  }\n}\n' \
+	fi; \
+	printf '{\n  "method": "api",\n  "api": {\n    "endpoint": "http://localhost:%s/api/admin/update-clearance",\n    "token": "%s"\n  }\n}\n' \
 		"$${PORT:-3000}" "$$RAW" \
 		> ../verifierform-stake-bet-lookup/scripts/sync-config.json
 	$(MAKE) -C ../verifierform-stake-bet-lookup capture
